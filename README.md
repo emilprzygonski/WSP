@@ -1,3 +1,3 @@
 # WSP
 Repozytorium projektu przedmiotu WSP - można wszystko
-a moszna nic :>
+a moszna nic :> fiu fiu
