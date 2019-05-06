@@ -1,3 +1,2 @@
 # WSP
-This is a line from RStudio
-lel
+Repozytorium projektu przedmiotu WSP - można wszystko
