@@ -26,6 +26,7 @@ data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
 data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
 
 hello=1
+proba <- 3
 
 RMA=rma(data_Affy) 
 
