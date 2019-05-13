@@ -25,7 +25,6 @@ data_Affy=ReadAffy(filenames=sampleNames(opis), verbose=TRUE)
 data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
 data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
 
-hello=1
 
 RMA=rma(data_Affy) 
 
