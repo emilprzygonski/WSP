@@ -1,5 +1,6 @@
 source("https://bioconductor.org/biocLite.R")
 
+biocLite('Biobase')
 library(Biobase)
 biocLite('affy')
 library('affy')
@@ -10,10 +11,12 @@ library(gplots)
 biocLite('gahgu95av2.db')
 library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
 library('gahgu95av2.db')
+biocLite('org.Hs.eg.db')
 library('org.Hs.eg.db')
+biocLite('gahgu95av2cdf')
 library('gahgu95av2cdf')
 
-setwd("C:/Users/superstudent/Downloads/projekt R") 
+setwd("C:/Users/Wiki/Documents/projekt R") 
 
 exampleFile = system.file("extdata", "pData.txt", package="Biobase")
 data = read.table("datasetA_scans.txt", header = TRUE, sep = "\t")
