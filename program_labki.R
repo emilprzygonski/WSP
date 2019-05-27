@@ -4,16 +4,10 @@ library(Biobase)
 biocLite('affy')
 library('affy')
 
-biocLite('gahgu95av2.db')
-library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
 biocLite("gplots")
 library(gplots) 
 
-library('gahgu95av2.db')
-library('org.Hs.eg.db')
-library('gahgu95av2cdf')
-
-setwd("C:\Users\superstudent\Desktop\WSP2019") 
+setwd("C:/Users/superstudent/Downloads/projekt R") 
 
 exampleFile = system.file("extdata", "pData.txt", package="Biobase")
 data = read.table("datasetA_scans.txt", header = TRUE, sep = "\t")
@@ -25,7 +19,6 @@ data_Affy=ReadAffy(filenames=sampleNames(opis), verbose=TRUE)
 data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
 data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
 
-zmiana = 12001201
 
 RMA=rma(data_Affy) 
 
@@ -57,17 +50,95 @@ plot(PCA_model$x[,1:2], col=colors, main='PCA')
 
 barplot(PCA_model$sdev[1:5]/sum(PCA_model$sde),main='PCA') 
 
+#funkcja dodaj?ca entrez id do ExprSet
+updated_ExprSet=function(ExprSet, dataRMA){
+  
+  biocLite('gahgu95av2.db')
+  library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
+  library('gahgu95av2.db')
+  library('org.Hs.eg.db')
+  library('gahgu95av2cdf')
+  
+  symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) 
+  
+  genNames=unlist(mget(featureNames(ExprSet),env=gahgu95av2GENENAME))
+  
+  entrezy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2ENTREZID)))
+  
+  entrezy_nazwy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2GENENAME)))
+  
+  macierz=data.frame(unlist(entrezy),unlist(entrezy_nazwy))
+  names(macierz)[1]="entrez_id"
+  names(macierz)[2]="entrez_nazwy"
+  
+  ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opis,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
+  
+  return(ExprSet)
+}
 
-symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) 
+ExprSet=updated_ExprSet(ExprSet, dataRMA)
+######
+summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
+  adeno=which(pData(ExprSet)$CLASS=='ADENO') 
+  squamous=which(pData(ExprSet)$CLASS=='SQUAMOUS') 
+  expr=exprs(ExprSet)
+  sr_adeno=rowMeans(expr[,adeno])
+  sr_squamous=rowMeans(expr[,squamous])
+  # fold change
+  FC=sr_adeno/sr_squamous
+  #test t
+  statistic=apply(expr,1,function(x) t.test(x[adeno],x[squamous])$statistic)
+  #przydatne polecenia apply vapply sapply..
+  pval=apply(expr,1,function(x) t.test(x[adeno],x[squamous])$p.val) # p warto?ci
+  #Korekta na wielokrotne testowanie
+  p_val_skorygowane=p.adjust(pval, method = method) # metoda korekcji pobierana jako parametr funkcji
+  #SYMBOLE GEN?W
+  symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) #mo?na jako lista albo wektor
+  #NAZWY GEN?W
+  genNames=unlist(mget(featureNames(ExprSet),env=gahgu95av2GENENAME)) # podobnie lista przekszta?cona na wektor
+  TAB=array(dim=c(dim(expr)[1],9))
+  colnames(TAB)=c("FerrariID","Symbol","description","fold change","?rednia w gr.ADENO","?rednia w
+                  gr.NORMAL","t-statistics",
+                  "pvalue","corrected p-value")
+  #tabela dla wszystkich sond, przed selekcj? mo?na ju? wcze?niej zainicjowa? i bezpo?rednio wpisywa?
+  TAB[,1]=featureNames(ExprSet)
+  TAB[,2]=symbol
+  TAB[,3]=genNames
+  TAB[,4]=FC
+  TAB[,5]=sr_adeno
+  TAB[,6]=sr_squamous
+  TAB[,7]=statistic
+  TAB[,8]=pval
+  TAB[,9]=p_val_skorygowane
+  head(TAB) #sprawdzenie jak wygl?da nasza tabela
+  #wyb?r sond do tabeli wynikowej zabezpieczenie mo?na zrobi? na podanie z?ej warto?ci (ujemnej)
+  # je?eli mamy u?amek to warto?? >1 to ilo?? sond zwracamy =1 to wszystkie
+  #je?eli warto??
+  if (sort_criterion>1)
+  {
+    ind_sort=sort(p_val_skorygowane,index=TRUE)$ix #interesuj? mnie indeksy
+    TAB=TAB[ind_sort[1:sort_criterion],] # tablica TAB zawiera dane dla n sond o najni?szym pvalue
+  } # tutaj dane s? posortowane co w niczym nie przeszkadza
+  if (sort_criterion<1)
+  {
+    ind_sort=which(p_val_skorygowane<sort_criterion)
+    TAB=TAB[ind_sort,]
+  }
+  # czy w?a?ciwe sortowanie, 0 brak sortowania
+  if (col_nr!=0){
+    ind_sort=sort(TAB[col_nr,],index=TRUE)$ix
+    TAB=TAB[ind_sort,]
+  }
+  # zapisanie tablicy wynikowej
+  write.table(TAB, file="data_table.txt",sep=sep,row.names = FALSE) #separator pobierany jako paramer
+  #tworzenie heatmapy
+  #wartosci ekspresji dla wybranych do tabeli gen?w
+  ekspr_wybrane=expr[ind_sort,] # tablica ekspresji tylko dla wybranych zestaw?w sond
+  png("heatmap.png") # tworzymy rysunek mapy ciep?a
+  heatmap.2(ekspr_wybrane) # rozbudowana wersja mapy ciep?a: mo?na poustawia? r??ne parametry
+  dev.off() #zamykamy okno
+  return(TAB)
+} #koniec funkcji
 
-genNames=unlist(mget(featureNames(ExprSet),env=gahgu95av2GENENAME))
-
-entrezy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2ENTREZID)))
-
-entrezy_nazwy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2GENENAME)))
-
-macierz=data.frame(unlist(entrezy),unlist(entrezy_nazwy))
-names(macierz)[1]="entrez_id"
-names(macierz)[2]="entrez_nazwy"
-
-ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opis,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
+#przyk?adowe wywo?anie
+summary_table(ExprSet, method='holm', sort_criterion=15, col_nr=5, sep=',') #method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
