@@ -7,6 +7,12 @@ library('affy')
 biocLite("gplots")
 library(gplots) 
 
+biocLite('gahgu95av2.db')
+library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
+library('gahgu95av2.db')
+library('org.Hs.eg.db')
+library('gahgu95av2cdf')
+
 setwd("C:/Users/superstudent/Downloads/projekt R") 
 
 exampleFile = system.file("extdata", "pData.txt", package="Biobase")
@@ -37,27 +43,8 @@ cutoff=round(dim(ExprSet)[1]*0.025) #wyznaczamy ilość sond do usunięcia po ob
 ind_clear=expr_sort$ix[c(1:cutoff,(feat_num-cutoff):feat_num)]
 ExprSet=ExprSet[-ind_clear,]
 
-
-PCA_model=prcomp(t(exprs(ExprSet))) 
-summary(PCA_model) 
-PCA_model$x
-
-
-adeno=which(pData(ExprSet)$CLASS=='ADENO') #wyszukujemy próby ADENO
-squamous=which(pData(ExprSet)$CLASS=='SQUAMOUS') # analogicznie do SQUAMOUS
-colors=ifelse(pData(ExprSet)$CLASS=='ADENO', 'red', 'blue') #dobieramy kolory
-plot(PCA_model$x[,1:2], col=colors, main='PCA')
-
-barplot(PCA_model$sdev[1:5]/sum(PCA_model$sde),main='PCA') 
-
 #funkcja dodaj?ca entrez id do ExprSet
 updated_ExprSet=function(ExprSet, dataRMA){
-  
-  biocLite('gahgu95av2.db')
-  library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
-  library('gahgu95av2.db')
-  library('org.Hs.eg.db')
-  library('gahgu95av2cdf')
   
   symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) 
   
