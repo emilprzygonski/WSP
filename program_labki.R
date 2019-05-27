@@ -7,9 +7,6 @@ library('affy')
 biocLite("gplots")
 library(gplots) 
 
-#sprawdzenie
-spr=5
-
 setwd("C:/Users/superstudent/Downloads/projekt R") 
 
 exampleFile = system.file("extdata", "pData.txt", package="Biobase")
