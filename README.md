@@ -5,15 +5,15 @@ Wytyczne projektu
 
 Stworzyć program dostępny z poziomu strony WWW realizujący następujące zadania:
 
-Identyfikacja sygnatur genowych różnicujących dla dwóch grup danych mikromacierzowych
+1) Identyfikacja sygnatur genowych różnicujących dla dwóch grup danych mikromacierzowych
 
-Możliwość wczytania standardowego obiektu klasy ExpressionSet (ESet)
+a. Możliwość wczytania standardowego obiektu klasy ExpressionSet (ESet)
 
-Analiza ścieżek sygnałowych powiązanych z dowolną listą sygnatur genowych
+2) Analiza ścieżek sygnałowych powiązanych z dowolną listą sygnatur genowych
 
-Możliwość wczytania list ścieżek ze strony (przykład: c2.all.v6.2.entrez.gmt): http://software.broadinstitute.org/gsea/msigdb/collections.jsp
+a. Możliwość wczytania list ścieżek ze strony (przykład: c2.all.v6.2.entrez.gmt): http://software.broadinstitute.org/gsea/msigdb/collections.jsp
 
-Możliwość wykorzystania własnej listy ścieżek
+b. Możliwość wykorzystania własnej listy ścieżek
 
 Przydatne pakiety:
 
