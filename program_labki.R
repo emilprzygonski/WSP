@@ -57,9 +57,12 @@ updated_ExprSet=function(ExprSet, dataRMA){
   
   entrezy_nazwy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2GENENAME)))
   
-  macierz=data.frame(unlist(entrezy),unlist(entrezy_nazwy))
-  names(macierz)[1]="entrez_id"
-  names(macierz)[2]="entrez_nazwy"
+  macierz=data.frame(unlist(featureNames(ExprSet)),unlist(symbol), unlist(genNames), unlist(entrezy),unlist(entrezy_nazwy))
+  names(macierz)[1]="próbka"
+  names(macierz)[2]="symbol"
+  names(macierz)[3]="nazwa"
+  names(macierz)[4]="entrez_id"
+  names(macierz)[5]="entrez_nazwa"
   
   ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opis,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
   
@@ -67,6 +70,15 @@ updated_ExprSet=function(ExprSet, dataRMA){
 }
 
 ExprSet=updated_ExprSet(ExprSet, dataRMA)
+
+install.packages("openxlsx")
+library("openxlsx")
+
+p=ExprSet@featureData
+wb <- createWorkbook()
+addWorksheet(wb, "Geny")
+writeData(wb, "Geny", p, startCol = 1, startRow = 1, rowNames = TRUE, colNames=TRUE)
+
 ######
 summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
   adeno=which(pData(ExprSet)$CLASS=='ADENO') 
