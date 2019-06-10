@@ -53,14 +53,23 @@ updated_ExprSet=function(ExprSet, dataRMA){
   
   genNames=unlist(mget(featureNames(ExprSet),env=gahgu95av2GENENAME))
   
-  entrezy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2ENTREZID)))
+  entrezy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA)
   
-  entrezy_nazwy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2GENENAME)))
+  entrezy_nazwy=mget(rownames(dataRMA),as.environment(as.list(gahgu95av2GENENAME)),ifnotfound=NA)
+ 
   
-  macierz=data.frame(unlist(featureNames(ExprSet)),unlist(symbol), unlist(genNames), unlist(entrezy),unlist(entrezy_nazwy))
+  macierz=data.frame(unlist(featureNames(ExprSet)),unlist(symbol), unlist(genNames))
   names(macierz)[1]="próbka"
   names(macierz)[2]="symbol"
   names(macierz)[3]="nazwa"
+
+  for (i in 1:length(macierz[,1])){
+    gn=which(names(entrezy) == names(genNames)[i])
+    en=which(names(entrezy_nazwy) == names(genNames)[i])
+    macierz[i,4]=entrezy[gn]
+    macierz[i,5]=entrezy_nazwy[en]
+  }
+  
   names(macierz)[4]="entrez_id"
   names(macierz)[5]="entrez_nazwa"
   
