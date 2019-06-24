@@ -1,19 +1,12 @@
 source("https://bioconductor.org/biocLite.R")
 
-biocLite('Biobase')
+BiocInstaller::biocLite(pkgs=c("Biobase", "affy", "gplots","gahgu95av2.db","org.Hs.eg.db","gahgu95av2cdf"), ask=FALSE)
 library(Biobase)
-biocLite('affy')
 library('affy')
-
-biocLite("gplots")
 library(gplots) 
-
-biocLite('gahgu95av2.db')
 library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
 library('gahgu95av2.db')
-biocLite('org.Hs.eg.db')
 library('org.Hs.eg.db')
-biocLite('gahgu95av2cdf')
 library('gahgu95av2cdf')
 
 setwd("C:/Users/Wiki/Documents/projekt R") 
@@ -56,15 +49,18 @@ dataRMA=exprs(RMA)
 ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opisy,experimentData=experiment,annotation="gahgu95av2.db") 
 
 #funkcja dodajaca entrez id do ExprSet
-updated_ExprSet=function(ExprSet, dataRMA){
+updated_ExprSet=function(ExprSet){
+  
+  assay_d=ExprSet@assayData
+  ekspresje=assay_d$exprs
   
   symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) 
   
   genNames=unlist(mget(featureNames(ExprSet),env=gahgu95av2GENENAME))
   
-  entrezy=unlist(mget(rownames(dataRMA),as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA))
+  entrezy=unlist(mget(rownames(ekspresje),as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA))
   
-  entrezy_nazwy=unlist(mget(rownames(dataRMA),as.environment(as.list(gahgu95av2GENENAME)),ifnotfound=NA))
+  entrezy_nazwy=unlist(mget(rownames(ekspresje),as.environment(as.list(gahgu95av2GENENAME)),ifnotfound=NA))
  
   
   macierz=data.frame(unlist(featureNames(ExprSet)),unlist(symbol), unlist(genNames),unlist(entrezy), unlist(entrezy_nazwy))
@@ -74,12 +70,14 @@ updated_ExprSet=function(ExprSet, dataRMA){
   names(macierz)[4]="entrez_id"
   names(macierz)[5]="entrez_nazwa"
   
-  ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opisy,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
+  opisy=ExprSet@phenoData
+  experiment = new("MIAME", name = "Dane mikromacierzowe",lab = "IO",title = "dane mikromacierzowe",url = "http://www.bioconductor.org", other = list(notes = "inne"))
+  ExprSet= new("ExpressionSet", expr=ekspresje, phenoData = opisy,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
   
   return(ExprSet)
 }
 
-ExprSet=updated_ExprSet(ExprSet, dataRMA)
+ExprSet=updated_ExprSet(ExprSet)
 
 #eksport do pliku Excela
 install.packages("openxlsx")
@@ -144,7 +142,7 @@ summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
     TAB=TAB[ind_sort,]
   }
   # zapisanie tablicy wynikowej
-  write.table(TAB, file="data_table.txt",sep=sep,row.names = FALSE) #separator pobierany jako paramer
+  write.table(TAB, file="summary_table.txt",sep=sep,row.names = FALSE) #separator pobierany jako paramer
   #tworzenie heatmapy
   #wartosci ekspresji dla wybranych do tabeli gen?w
   ekspr_wybrane=expr[ind_sort,] # tablica ekspresji tylko dla wybranych zestaw?w sond
@@ -156,3 +154,8 @@ summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
 
 #przyk?adowe wywo?anie
 summary_table(ExprSet, method='holm', sort_criterion=15, col_nr=5, sep=',') #method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+
+#wszystkie oraz różnicujące geny do analizy ścieżek sygnalnych
+wszystkie_geny=ExprSet@featureData
+wszystkie_geny=wszystkie_geny@data
+wszystkie_geny_entrez_id=wszystkie_geny$entrez_id
