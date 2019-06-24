@@ -26,7 +26,7 @@ experiment = new("MIAME", name = "Dane mikromacierzowe",lab = "IO",title = "dane
 # data1=na.omit(data1)
 # opis=opisy[1:10]
 # opis=na.omit(opis)
-sampleNames(opis) = paste(sampleNames(opisy), ".CEL", sep="")
+sampleNames(opisy) = paste(sampleNames(opisy), ".CEL", sep="")
 data_Affy=ReadAffy(filenames=sampleNames(opisy), verbose=TRUE)
 data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
 data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
@@ -81,15 +81,14 @@ updated_ExprSet=function(ExprSet, dataRMA){
 
 ExprSet=updated_ExprSet(ExprSet, dataRMA)
 
+#eksport do pliku Excela
 install.packages("openxlsx")
 library("openxlsx")
-
+installr::install.rtools() #R.3.3.x or later
+Sys.setenv("R_ZIPCMD" = "C:/Rtools/bin/zip.exe")
 cechy=ExprSet@featureData
 cechy=cechy@data
-wb <- createWorkbook()
-addWorksheet(wb, "Geny")
-writeData(wb, "Geny", cechy, startCol = 1, startRow = 1, rowNames = FALSE, colNames=TRUE)
-
+write.xlsx(cechy, "dane_geny.xlsx", asTable = TRUE)
 
 
 ######
