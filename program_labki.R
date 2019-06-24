@@ -51,8 +51,7 @@ ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opisy,experimentData=exp
 #funkcja dodajaca entrez id do ExprSet
 updated_ExprSet=function(ExprSet){
   
-  assay_d=ExprSet@assayData
-  ekspresje=assay_d$exprs
+  ekspresje=exprs(ExprSet)
   
   symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) 
   
@@ -89,8 +88,8 @@ cechy=cechy@data
 write.xlsx(cechy, "dane_geny.xlsx", asTable = TRUE)
 
 
-######
-summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
+#analiza cech różnicujących
+summary_table=function(ExprSet, method, sort_criterion, sep){
   adeno=which(pData(ExprSet)$CLASS=='ADENO') 
   squamous=which(pData(ExprSet)$CLASS=='SQUAMOUS') 
   expr=exprs(ExprSet)
@@ -108,24 +107,26 @@ summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
   symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) #mo?na jako lista albo wektor
   #NAZWY GEN?W
   genNames=unlist(mget(featureNames(ExprSet),env=gahgu95av2GENENAME)) # podobnie lista przekszta?cona na wektor
-  TAB=array(dim=c(dim(expr)[1],9))
-  colnames(TAB)=c("FerrariID","Symbol","description","fold change","?rednia w gr.ADENO","?rednia w
-                  gr.NORMAL","t-statistics",
-                  "pvalue","corrected p-value")
+  
+  entrezy=unlist(mget(rownames(expr),as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA))
+  
+  TAB=array(dim=c(dim(expr)[1],10))
+  colnames(TAB)=c("FerrariID","Symbol","description","entrez id","fold change","srednia w gr.ADENO","srednia w gr.NORMAL","t-statistics","pvalue","corrected p-value")
   #tabela dla wszystkich sond, przed selekcj? mo?na ju? wcze?niej zainicjowa? i bezpo?rednio wpisywa?
   TAB[,1]=featureNames(ExprSet)
   TAB[,2]=symbol
   TAB[,3]=genNames
-  TAB[,4]=FC
-  TAB[,5]=sr_adeno
-  TAB[,6]=sr_squamous
-  TAB[,7]=statistic
-  TAB[,8]=pval
-  TAB[,9]=p_val_skorygowane
-  head(TAB) #sprawdzenie jak wygl?da nasza tabela
+  TAB[,4]=entrezy
+  TAB[,5]=FC
+  TAB[,6]=sr_adeno
+  TAB[,7]=sr_squamous
+  TAB[,8]=statistic
+  TAB[,9]=pval
+  TAB[,10]=p_val_skorygowane
   #wyb?r sond do tabeli wynikowej zabezpieczenie mo?na zrobi? na podanie z?ej warto?ci (ujemnej)
   # je?eli mamy u?amek to warto?? >1 to ilo?? sond zwracamy =1 to wszystkie
   #je?eli warto??
+  
   if (sort_criterion>1)
   {
     ind_sort=sort(p_val_skorygowane,index=TRUE)$ix #interesuj? mnie indeksy
@@ -137,10 +138,9 @@ summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
     TAB=TAB[ind_sort,]
   }
   # czy w?a?ciwe sortowanie, 0 brak sortowania
-  if (col_nr!=0){
-    ind_sort=sort(TAB[col_nr,],index=TRUE)$ix
+    ind_sort=sort(as.double(TAB[,10]),index=TRUE)$ix
     TAB=TAB[ind_sort,]
-  }
+
   # zapisanie tablicy wynikowej
   write.table(TAB, file="summary_table.txt",sep=sep,row.names = FALSE) #separator pobierany jako paramer
   #tworzenie heatmapy
@@ -153,9 +153,11 @@ summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
 } #koniec funkcji
 
 #przyk?adowe wywo?anie
-summary_table(ExprSet, method='holm', sort_criterion=15, col_nr=5, sep=',') #method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+TAB_geny_roznicujace=summary_table(ExprSet, method='holm', sort_criterion=0.01, sep=', ') #method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 
 #wszystkie oraz różnicujące geny do analizy ścieżek sygnalnych
 wszystkie_geny=ExprSet@featureData
 wszystkie_geny=wszystkie_geny@data
 wszystkie_geny_entrez_id=wszystkie_geny$entrez_id
+
+roznicujce_geny_entrez_id=TAB_geny_roznicujace[,4]
