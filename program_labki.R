@@ -18,36 +18,44 @@ library('gahgu95av2cdf')
 
 setwd("C:/Users/Wiki/Documents/projekt R") 
 
-exampleFile = system.file("extdata", "pData.txt", package="Biobase")
 data = read.table("datasetA_scans.txt", header = TRUE, sep = "\t")
-data=data[c(1:5,244:248),]
-opis = read.AnnotatedDataFrame("datasetA_scans.txt", sep="\t", header=TRUE, row.names=4,stringsAsFactors = F) 
-opis=opis[c(1:5,244:248)]
-sampleNames(opis) = paste(sampleNames(opis), ".CEL", sep="")
-data_Affy=ReadAffy(filenames=sampleNames(opis), verbose=TRUE)
+opisy = read.AnnotatedDataFrame("datasetA_scans.txt", sep="\t", header=TRUE, row.names=4,stringsAsFactors = F) 
+experiment = new("MIAME", name = "Dane mikromacierzowe",lab = "IO",title = "dane mikromacierzowe",url = "http://www.bioconductor.org", other = list(notes = "inne"))
+
+# data1=data[1:10,]
+# data1=na.omit(data1)
+# opis=opisy[1:10]
+# opis=na.omit(opis)
+sampleNames(opis) = paste(sampleNames(opisy), ".CEL", sep="")
+data_Affy=ReadAffy(filenames=sampleNames(opisy), verbose=TRUE)
 data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
 data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
 
-
-RMA=rma(data_Affy) 
-
+RMA=rma(data_Affy)
 dataRMA=exprs(RMA) 
 
 
-experiment = new("MIAME", name = "Dane mikromacierzowe",lab = "IO",title = "dane tesowe",abstract = "Przyklad",url = "http://www.bioconductor.org", other = list(notes = "inne"))
+# x = seq(11,length(data[,1]),10)
 
-ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opis,experimentData=experiment,annotation="gahgu95av2.db") 
+# for (i in x){
+# data1=data[i:(i+9),]
+# data1=na.omit(data1)
+# opis1=opisy[i:(i+9)]
+# opis1=na.omit(opis1)
+# 
+# sampleNames(opis1) = paste(sampleNames(opis1), ".CEL", sep="")
+# data_Affy=ReadAffy(filenames=sampleNames(opis1), verbose=TRUE)
+# data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
+# data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
+# 
+# RMA1=rma(data_Affy)
+# dataRMA1=exprs(RMA1) 
+# dataRMA=cbind(dataRMA, dataRMA1)
+# }
 
-expr_sort=sort(rowMeans(exprs(ExprSet)),index.return=T) #sortujemy średnie ekspresje 
+ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opisy,experimentData=experiment,annotation="gahgu95av2.db") 
 
-feat_num=dim(ExprSet)[1] 
-
-# cutoff=round(dim(ExprSet)[1]*0.025) #wyznaczamy ilość sond do usunięcia po obu stronach
-# ind_clear=expr_sort$ix[c(1:cutoff,(feat_num-cutoff):feat_num)]
-# ExprSet=ExprSet[-ind_clear,]
-# dataRMA=dataRMA[-ind_clear,]
-
-#funkcja dodaj?ca entrez id do ExprSet
+#funkcja dodajaca entrez id do ExprSet
 updated_ExprSet=function(ExprSet, dataRMA){
   
   symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) 
@@ -66,7 +74,7 @@ updated_ExprSet=function(ExprSet, dataRMA){
   names(macierz)[4]="entrez_id"
   names(macierz)[5]="entrez_nazwa"
   
-  ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opis,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
+  ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opisy,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
   
   return(ExprSet)
 }
@@ -76,10 +84,13 @@ ExprSet=updated_ExprSet(ExprSet, dataRMA)
 install.packages("openxlsx")
 library("openxlsx")
 
-p=ExprSet@featureData
+cechy=ExprSet@featureData
+cechy=cechy@data
 wb <- createWorkbook()
 addWorksheet(wb, "Geny")
-writeData(wb, "Geny", p, startCol = 1, startRow = 1, rowNames = TRUE, colNames=TRUE)
+writeData(wb, "Geny", cechy, startCol = 1, startRow = 1, rowNames = FALSE, colNames=TRUE)
+
+
 
 ######
 summary_table=function(ExprSet, method, sort_criterion, col_nr, sep){
