@@ -155,7 +155,7 @@ summary_table=function(ExprSet, method, sort_criterion, sep){
 #przyk?adowe wywo?anie
 TAB_geny_roznicujace=summary_table(ExprSet, method='holm', sort_criterion=0.01, sep=', ') #method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 
-#wszystkie oraz różnicujące geny do analizy ścieżek sygnalnych
+#wszystkie oraz różnicujące geny do analizy ścieżek sygnalnych np n podstawie entrez id
 wszystkie_geny=ExprSet@featureData
 wszystkie_geny=wszystkie_geny@data
 wszystkie_geny_entrez_id=wszystkie_geny$entrez_id
