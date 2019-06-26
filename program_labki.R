@@ -1,6 +1,7 @@
 source("https://bioconductor.org/biocLite.R")
 
-BiocInstaller::biocLite(pkgs=c("Biobase", "affy", "gplots","gahgu95av2.db","org.Hs.eg.db","gahgu95av2cdf"), ask=FALSE)
+BiocInstaller::biocLite(pkgs=c("limma", "Biobase", "affy", "gplots","gahgu95av2.db","org.Hs.eg.db","gahgu95av2cdf"), ask=FALSE)
+library(limma)
 library(Biobase)
 library('affy')
 library(gplots) 
@@ -87,9 +88,8 @@ cechy=ExprSet@featureData
 cechy=cechy@data
 write.xlsx(cechy, "dane_geny.xlsx", asTable = TRUE)
 
-
-#analiza cech różnicujących
-summary_table=function(ExprSet, method, sort_criterion, sep){
+#analiza cech różnicujących - test t lub Fold Change
+summary_table_FC=function(ExprSet, correction_method, sort_method, sort_criterion, sep){
   adeno=which(pData(ExprSet)$CLASS=='ADENO') 
   squamous=which(pData(ExprSet)$CLASS=='SQUAMOUS') 
   expr=exprs(ExprSet)
@@ -102,7 +102,7 @@ summary_table=function(ExprSet, method, sort_criterion, sep){
   #przydatne polecenia apply vapply sapply..
   pval=apply(expr,1,function(x) t.test(x[adeno],x[squamous])$p.val) # p warto?ci
   #Korekta na wielokrotne testowanie
-  p_val_skorygowane=p.adjust(pval, method = method) # metoda korekcji pobierana jako parametr funkcji
+  p_val_skorygowane=p.adjust(pval, method = correction_method) # metoda korekcji pobierana jako parametr funkcji
   #SYMBOLE GEN?W
   symbol=unlist(mget(featureNames(ExprSet),env=gahgu95av2SYMBOL)) #mo?na jako lista albo wektor
   #NAZWY GEN?W
@@ -110,54 +110,82 @@ summary_table=function(ExprSet, method, sort_criterion, sep){
   
   entrezy=unlist(mget(rownames(expr),as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA))
   
-  TAB=array(dim=c(dim(expr)[1],10))
-  colnames(TAB)=c("FerrariID","Symbol","description","entrez id","fold change","srednia w gr.ADENO","srednia w gr.NORMAL","t-statistics","pvalue","corrected p-value")
+  TAB=array(dim=c(dim(expr)[1],11))
+  colnames(TAB)=c("Indeks","FerrariID","Symbol","description","entrez id","fold change","srednia w gr.ADENO","srednia w gr.NORMAL","t-statistics","pvalue","corrected p-value")
   #tabela dla wszystkich sond, przed selekcj? mo?na ju? wcze?niej zainicjowa? i bezpo?rednio wpisywa?
-  TAB[,1]=featureNames(ExprSet)
-  TAB[,2]=symbol
-  TAB[,3]=genNames
-  TAB[,4]=entrezy
-  TAB[,5]=FC
-  TAB[,6]=sr_adeno
-  TAB[,7]=sr_squamous
-  TAB[,8]=statistic
-  TAB[,9]=pval
-  TAB[,10]=p_val_skorygowane
+  TAB[,1]=c(1:dim(expr)[1])
+  TAB[,2]=featureNames(ExprSet)
+  TAB[,3]=symbol
+  TAB[,4]=genNames
+  TAB[,5]=entrezy
+  TAB[,6]=FC
+  TAB[,7]=sr_adeno
+  TAB[,8]=sr_squamous
+  TAB[,9]=statistic
+  TAB[,10]=pval
+  TAB[,11]=p_val_skorygowane
   #wyb?r sond do tabeli wynikowej zabezpieczenie mo?na zrobi? na podanie z?ej warto?ci (ujemnej)
   # je?eli mamy u?amek to warto?? >1 to ilo?? sond zwracamy =1 to wszystkie
   #je?eli warto??
-  
-  if (sort_criterion>1)
-  {
-    ind_sort=sort(p_val_skorygowane,index=TRUE)$ix #interesuj? mnie indeksy
-    TAB=TAB[ind_sort[1:sort_criterion],] # tablica TAB zawiera dane dla n sond o najni?szym pvalue
-  } # tutaj dane s? posortowane co w niczym nie przeszkadza
-  if (sort_criterion<1)
-  {
-    ind_sort=which(p_val_skorygowane<sort_criterion)
+  if (sort_method==1){
+    if (sort_criterion>1)
+    {
+      ind_sort=sort(p_val_skorygowane,index=TRUE)$ix #interesuj? mnie indeksy
+      TAB=TAB[ind_sort[1:sort_criterion],] # tablica TAB zawiera dane dla n sond o najni?szym pvalue
+    } # tutaj dane s? posortowane co w niczym nie przeszkadza
+    if (sort_criterion<1)
+    {
+      ind_sort=which(p_val_skorygowane<sort_criterion)
+      TAB=TAB[ind_sort,]
+    }
+    # czy w?a?ciwe sortowanie, 0 brak sortowania
+    ind_sort=sort(as.double(TAB[,11]),index=TRUE)$ix
     TAB=TAB[ind_sort,]
   }
-  # czy w?a?ciwe sortowanie, 0 brak sortowania
-    ind_sort=sort(as.double(TAB[,10]),index=TRUE)$ix
+  
+  if (sort_method==2){
+    if (sort_criterion>5)
+    {
+      ind_sort=sort(FC,decreasing = TRUE, index=TRUE)$ix #interesuj? mnie indeksy
+      TAB=TAB[ind_sort[1:sort_criterion],] # tablica TAB zawiera dane dla n sond o najni?szym pvalue
+    } # tutaj dane s? posortowane co w niczym nie przeszkadza
+    if (sort_criterion<5)
+    {
+      ind_sort=which(FC>sort_criterion)
+      TAB=TAB[ind_sort,]
+    }
+    # czy w?a?ciwe sortowanie, 0 brak sortowania
+    ind_sort=sort(as.double(TAB[,6]),decreasing = TRUE,index=TRUE)$ix
     TAB=TAB[ind_sort,]
-
+  }
+  
+  # design<- model.matrix(~c(rep(1,1000),rep(0,100)))
+  # fit = lmFit(expr , design)
+  # fit = eBayes(fit)
+  # tt = topTable(fit, coef = 2, adjust.method = "BH", sort.by = "p", number = 10)
+  
   # zapisanie tablicy wynikowej
   write.table(TAB, file="summary_table.txt",sep=sep,row.names = FALSE) #separator pobierany jako paramer
-  #tworzenie heatmapy
-  #wartosci ekspresji dla wybranych do tabeli gen?w
-  ekspr_wybrane=expr[ind_sort,] # tablica ekspresji tylko dla wybranych zestaw?w sond
-  png("heatmap.png") # tworzymy rysunek mapy ciep?a
-  heatmap.2(ekspr_wybrane) # rozbudowana wersja mapy ciep?a: mo?na poustawia? r??ne parametry
-  dev.off() #zamykamy okno
   return(TAB)
-} #koniec funkcji
+} 
 
 #przyk?adowe wywo?anie
-TAB_geny_roznicujace=summary_table(ExprSet, method='holm', sort_criterion=0.01, sep=', ') #method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+#correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+#sort_method: 1 - corrected p_val, 2 - Fold Change
+TAB_geny_roznicujace=summary_table_FC(ExprSet, correction_method='holm', sort_method=1 ,sort_criterion=0.01, sep=', ') #correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+
+#tworzenie heatmapy
+#wartosci ekspresji dla wybranych do tabeli gen?w
+expr=exprs(ExprSet)
+ind=TAB_geny_roznicujace[,1]
+ekspr_wybrane=expr[as.double(ind),] # tablica ekspresji tylko dla wybranych zestaw?w sond
+png("heatmap.png") # tworzymy rysunek mapy ciep?a
+heatmap.2(ekspr_wybrane) # rozbudowana wersja mapy ciep?a: mo?na poustawia? r??ne parametry
+dev.off() #zamykamy okno
 
 #wszystkie oraz różnicujące geny do analizy ścieżek sygnalnych np n podstawie entrez id
 wszystkie_geny=ExprSet@featureData
 wszystkie_geny=wszystkie_geny@data
 wszystkie_geny_entrez_id=wszystkie_geny$entrez_id
 
-roznicujce_geny_entrez_id=TAB_geny_roznicujace[,4]
+roznicujce_geny_entrez_id=TAB_geny_roznicujace_ttest[,4]
