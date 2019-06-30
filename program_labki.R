@@ -5,7 +5,7 @@ library(limma)
 library(Biobase)
 library('affy')
 library(gplots) 
-library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
+#library(gahgu95av2.db) # standardowo nie jest zainstalowana ta biblioteka biocLite(gahgu95av2.db)
 library('gahgu95av2.db')
 library('org.Hs.eg.db')
 library('gahgu95av2cdf')
@@ -49,8 +49,37 @@ dataRMA=exprs(RMA)
 
 ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opisy,experimentData=experiment,annotation="gahgu95av2.db") 
 
-#funkcja dodajaca entrez id do ExprSet
+#wczytanie pliku tekstowego z nazwami sond wybranego przez użytkownika
+sondy=lapply(read.delim(file.choose(), header = FALSE, stringsAsFactor = FALSE), as.character)$V1
+
+#funkcja dodajaca symbole genów, ich nazwy oraz entrez id do ExprSet
 updated_ExprSet=function(ExprSet){
+  
+  if (is.character(ExprSet)=='TRUE'){ #gdy użytkownik wczytuje jedynie litę z nazwami sond - zwracany ExprSet z zerowymi ekspresjami
+    
+    symbol=unlist(mget(ExprSet,env=gahgu95av2SYMBOL)) 
+    
+    genNames=unlist(mget(ExprSet,env=gahgu95av2GENENAME))
+    
+    entrezy=unlist(mget(ExprSet,as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA))
+    
+    entrezy_nazwy=unlist(mget(ExprSet,as.environment(as.list(gahgu95av2GENENAME)),ifnotfound=NA))
+    
+    
+    macierz=data.frame(unlist(ExprSet),unlist(symbol), unlist(genNames),unlist(entrezy), unlist(entrezy_nazwy))
+    names(macierz)[1]="próbka"
+    names(macierz)[2]="symbol"
+    names(macierz)[3]="nazwa"
+    names(macierz)[4]="entrez_id"
+    names(macierz)[5]="entrez_nazwa"
+    
+    ekspresje=matrix(0L, nrow=length(sondy),ncol=1) 
+    
+    ExprSet= new("ExpressionSet",expr=ekspresje, annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
+    
+    return(ExprSet)
+    
+  } else {
   
   ekspresje=exprs(ExprSet)
   
@@ -58,9 +87,9 @@ updated_ExprSet=function(ExprSet){
   
   genNames=unlist(mget(featureNames(ExprSet),env=gahgu95av2GENENAME))
   
-  entrezy=unlist(mget(rownames(ekspresje),as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA))
+  entrezy=unlist(mget(featureNames(ExprSet),as.environment(as.list(gahgu95av2ENTREZID)),ifnotfound=NA))
   
-  entrezy_nazwy=unlist(mget(rownames(ekspresje),as.environment(as.list(gahgu95av2GENENAME)),ifnotfound=NA))
+  entrezy_nazwy=unlist(mget(featureNames(ExprSet),as.environment(as.list(gahgu95av2GENENAME)),ifnotfound=NA))
  
   
   macierz=data.frame(unlist(featureNames(ExprSet)),unlist(symbol), unlist(genNames),unlist(entrezy), unlist(entrezy_nazwy))
@@ -75,11 +104,12 @@ updated_ExprSet=function(ExprSet){
   ExprSet= new("ExpressionSet", expr=ekspresje, phenoData = opisy,experimentData=experiment,annotation="gahgu95av2.db",featureData=AnnotatedDataFrame(macierz))
   
   return(ExprSet)
+  }
 }
 
 ExprSet=updated_ExprSet(ExprSet)
 
-#eksport do pliku Excela
+#eksport informacji o genach do pliku Excela
 install.packages("openxlsx")
 library("openxlsx")
 installr::install.rtools() #R.3.3.x or later
@@ -89,9 +119,9 @@ cechy=cechy@data
 write.xlsx(cechy, "dane_geny.xlsx", asTable = TRUE)
 
 #analiza cech różnicujących - test t lub Fold Change
-summary_table_FC=function(ExprSet, correction_method, sort_method, sort_criterion, sep){
-  adeno=which(pData(ExprSet)$CLASS=='ADENO') 
-  squamous=which(pData(ExprSet)$CLASS=='SQUAMOUS') 
+summary_table_FC=function(ExprSet, class1, class2, correction_method, sort_method, sort_criterion, sep){
+  adeno=which(pData(ExprSet)$CLASS==class1) 
+  squamous=which(pData(ExprSet)$CLASS==class2) 
   expr=exprs(ExprSet)
   sr_adeno=rowMeans(expr[,adeno])
   sr_squamous=rowMeans(expr[,squamous])
@@ -172,7 +202,8 @@ summary_table_FC=function(ExprSet, correction_method, sort_method, sort_criterio
 #przyk?adowe wywo?anie
 #correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #sort_method: 1 - corrected p_val, 2 - Fold Change
-TAB_geny_roznicujace=summary_table_FC(ExprSet, correction_method='holm', sort_method=1 ,sort_criterion=0.01, sep=', ') #correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+#class1, class2 - użytkownik musi znać oznaczenia w phenodata$CLASS dla grup które chce porównywać
+TAB_geny_roznicujace=summary_table_FC(ExprSet, class1='ADENO', class2='SQUAMOUS', correction_method='holm', sort_method=1 ,sort_criterion=0.01, sep=', ') #correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 
 #tworzenie heatmapy
 #wartosci ekspresji dla wybranych do tabeli gen?w
