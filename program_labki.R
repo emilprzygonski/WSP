@@ -52,6 +52,15 @@ ExprSet= new("ExpressionSet", expr=dataRMA, phenoData = opisy,experimentData=exp
 #wczytanie pliku tekstowego z nazwami sond wybranego przez użytkownika
 sondy=lapply(read.delim(file.choose(), header = FALSE, stringsAsFactor = FALSE), as.character)$V1
 
+#wczytanie Expressionset (tworzenie z gotowej macierzy ekspresji)
+exprsFile =read.delim(file.choose())
+phenoFile = read.table(file.choose(), header = TRUE, sep=',')
+
+## Read ExpressionSet with appropriate parameters
+obj = readExpressionSet(exprsFile, phenoFile, sep = "\t", header=TRUE)
+obj
+
+
 #funkcja dodajaca symbole genów, ich nazwy oraz entrez id do ExprSet
 updated_ExprSet=function(ExprSet){
   
@@ -119,7 +128,7 @@ cechy=cechy@data
 write.xlsx(cechy, "dane_geny.xlsx", asTable = TRUE)
 
 #analiza cech różnicujących - test t lub Fold Change
-summary_table_FC=function(ExprSet, class1, class2, correction_method, sort_method, sort_criterion, sep){
+summary_table=function(ExprSet, class1, class2, correction_method, sort_method, sort_criterion, sep){
   adeno=which(pData(ExprSet)$CLASS==class1) 
   squamous=which(pData(ExprSet)$CLASS==class2) 
   expr=exprs(ExprSet)
@@ -154,6 +163,13 @@ summary_table_FC=function(ExprSet, class1, class2, correction_method, sort_metho
   TAB[,9]=statistic
   TAB[,10]=pval
   TAB[,11]=p_val_skorygowane
+  
+  #histogrm wszystkich p-wartości po korekcji zapisywany do pliku png
+  png("histogram.png") # tworzymy rysunek histogramu
+  p=as.double(TAB[,11])
+  hist(p, main="Histogram skorygowanych p-wartości", xlab = "p-wartość",col="lightblue")
+  dev.off() #zamykamy okno
+  
   #wyb?r sond do tabeli wynikowej zabezpieczenie mo?na zrobi? na podanie z?ej warto?ci (ujemnej)
   # je?eli mamy u?amek to warto?? >1 to ilo?? sond zwracamy =1 to wszystkie
   #je?eli warto??
@@ -203,15 +219,42 @@ summary_table_FC=function(ExprSet, class1, class2, correction_method, sort_metho
 #correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #sort_method: 1 - corrected p_val, 2 - Fold Change
 #class1, class2 - użytkownik musi znać oznaczenia w phenodata$CLASS dla grup które chce porównywać
-TAB_geny_roznicujace=summary_table_FC(ExprSet, class1='ADENO', class2='SQUAMOUS', correction_method='holm', sort_method=1 ,sort_criterion=0.01, sep=', ') #correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+TAB_geny_roznicujace=summary_table(ExprSet, class1='ADENO', class2='SQUAMOUS', correction_method='fdr', sort_method=1 ,sort_criterion=0.001, sep=', ') #correction_method=c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 
 #tworzenie heatmapy
 #wartosci ekspresji dla wybranych do tabeli gen?w
 expr=exprs(ExprSet)
 ind=TAB_geny_roznicujace[,1]
 ekspr_wybrane=expr[as.double(ind),] # tablica ekspresji tylko dla wybranych zestaw?w sond
-png("heatmap.png") # tworzymy rysunek mapy ciep?a
-heatmap.2(ekspr_wybrane) # rozbudowana wersja mapy ciep?a: mo?na poustawia? r??ne parametry
+nr=dim(ekspr_wybrane)[1]
+nc=dim(ekspr_wybrane)[2]
+png("heatmap.png", width=1000, height=800) # tworzymy rysunek mapy ciep?a 
+# rozbudowana wersja mapy ciep?a
+#oś x to obserwacje, a oś y to sondy
+par(oma=c(1,1,1,1))
+par(mar=c(2,2,2,2))
+# definiowanie własnego układu heatmapy
+# tabela 3x3 ze zdefiniowaną lokalizacją elementów heatmapy
+mylmat = rbind(c(0,3,0), #tytuł
+               c(0,1,2), #dendrogramy
+               c(0,4,0)) #legenda kolorów
+mylwid = c(0.2,5,0.1) #szerokość każdej z trzech sekcji kolumnowych plota
+mylhei = c(0.4,5,0.8) #wysokość każdej z trzech sekcji kolumnowych plota
+heatmap.2(ekspr_wybrane, 
+          main = "Ekspresja genów różnicujących", # heat map title
+          xlab = "obserwacje",
+          ylab = "sondy",
+          col = bluered, #paleta kolorów
+          density.info="none",  # turns off density plot inside color legend
+          trace="none",         # turns off trace lines inside the heat map
+          lmat=mylmat, lwid=mylwid, lhei=mylhei,
+          margins =c(8,8),     # widens margins around plot 
+          dendrogram="none",     #dendrogram ukazuje związki między elementami na podstawie przyjętego kryterium
+          Colv="NA",
+          cexRow = 0.07 + 1/log10(nr), #rozmiary czcionki nazw wierszy i kolumn
+          cexCol = 0.07 + 1/log10(nc),
+          offsetRow = 0.2,    #odległość nazw obserwacji od heatmapy
+          offsetCol = 0.2)    #odległość nazw sond od heatmapy
 dev.off() #zamykamy okno
 
 #wszystkie oraz różnicujące geny do analizy ścieżek sygnalnych np n podstawie entrez id
