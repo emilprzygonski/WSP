@@ -345,7 +345,7 @@ lista_genow=wczytaj_liste()
 
 
 #wszystkie oraz różnicujące geny do analizy ścieżek sygnalnych np n podstawie entrez id
-wszystkie_geny=ExprSet@featureData
+wszystkie_geny=up_ExprSet@featureData
 wszystkie_geny=wszystkie_geny@data
 wszystkie_geny_entrez_id=wszystkie_geny$entrez_id
 
