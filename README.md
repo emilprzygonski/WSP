@@ -63,7 +63,7 @@ Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego dzia
 
 *****
 lista kategorii i oznaczenia
-  # H, C1, C2, C2-CGP (jak po myślniku to subkategoria)
+  #H, C1, C2, C2-CGP (jak po myślniku to subkategoria)
   
   #C2-CP, C2-CP:BIOCARTA, C2-CP:KEGG, C2-CP:PID, C2-CP:REACTOME
   
