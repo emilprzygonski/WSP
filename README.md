@@ -39,23 +39,23 @@ Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego dzia
 
 - summary_table(ExprSet, class1, class2, correction_method, FoldChangeCutoff, sort_critenon, number, sep)  --> analiza cech różnicujących 
 
-* ExprSet - obiekt ExpressionSet
+** ExprSet - obiekt ExpressionSet
 
-* class1 - 1 klasa obserwacji 
+** class1 - 1 klasa obserwacji 
 
-* class2 - 2 klasa obserwacji 
+** class2 - 2 klasa obserwacji 
 
 ***** użytkownik musi znać oznaczenia klas w ExprSet@phenoData@data[["CLASS"]]
 
-* correction_method - metoda korekcji p-wartości (do wyboru holm, hochberg, hommel, bonferroni, BH, BY, fdr, none)
+** correction_method - metoda korekcji p-wartości (do wyboru holm, hochberg, hommel, bonferroni, BH, BY, fdr, none)
 
-* FoldChangeCutoff - poziom odcięcia FoldChange (użytkownik podaje liczę większą bądź równą 1)
+** FoldChangeCutoff - poziom odcięcia FoldChange (użytkownik podaje liczę większą bądź równą 1)
 
-* sort_critenon - poziom ufności p-wartości (np.: 0.05)
+** sort_critenon - poziom ufności p-wartości (np.: 0.05)
 
-* number - liczba wyników do zwrócenia (0 zwraca wszystkie)
+** number - liczba wyników do zwrócenia (0 zwraca wszystkie)
 
-* sep - separator przy zapisie do pliku .txt
+** sep - separator przy zapisie do pliku .txt
 
 - heatmapa(ExprSet, TAB_geny_roznicujace) --> wyrysowanie heatmapy ekspresji dla sond różnicujących i zapis do pliku .png
 
