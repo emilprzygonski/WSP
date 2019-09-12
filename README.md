@@ -23,6 +23,9 @@ Uruchomienie aplikacji jest zalecane w oprogramowaniu R w wersji 3.3.3 lub 3.3.0
 -log4r
 -oligo
 
+Opis interfejsu aplikacji:
+
+
 Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego działania:
 
 - Create_ExprSet() --> tworzy obiekt ExpSet na podstawie plików .CEL, użytkownik wskazuje folder, w którym znajdują się pliki oraz plik z adnotacjami zawierający nazwy wcześniej wspomnianych plików. 
