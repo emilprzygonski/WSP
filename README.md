@@ -1,5 +1,15 @@
 Celem projektu, którego przedstawieniem jest repozytorium było stworzenie aplikacji/programu w celu identyfikacji sygnatur genów różnicujących dwóch grup danych mikromacierzowych oraz analizy ścieżek sygnałowych.
 
+Podział pracy w grupie:
+> NOCUŃ WIKTORIA, KUKLA ARTUR
+1)	Identyfikacja sygnatur genowych różnicujących dla dwóch grup danych mikromacierzowych 
+
+> WENZ KALINA, PRZYGOŃSKI EMIL
+2)	Analiza ścieżek sygnałowych powiązanych z  listą sygnatur genowych
+
+> BONIEK ANNA, WIECZOREK MARTA  
+3)  Stworzenie interfejsu graficznego 
+
 Uruchomienie aplikacji jest zalecane w oprogramowaniu R w wersji 3.3.3 lub 3.3.0, gdyż w tych wersjach kompatybilne są wymagane pakiety: 
 
 -Biobase
@@ -62,7 +72,8 @@ Z niewiadomych przyczyn po wczytaniu do tej funkcji wyniku funkcji wczytaj_sondy
 
 - heatmapa(ExprSet, TAB_geny_roznicujace) --> wyrysowanie heatmapy ekspresji dla sond różnicujących i zapis do pliku .png
 
-- import_zmsigdbr() --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje, jej wyjście wykorzystuje się w funkcji prepare_data 
+- import_zmsigdbr() --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje. Następnie tworzone są pliki .gmt potrzebne do analizy sygnałowej GSA.
+NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK _______.GMT ZE 
 
 *****
 Lista kategorii i oznaczenia (jak po myślniku to subkategoria)
@@ -74,8 +85,6 @@ Lista kategorii i oznaczenia (jak po myślniku to subkategoria)
   #C3, C3-MIR, C3-TFT, C4, C4-CGN, C4-CM, C5, C5-BP, C5-CC
   
   #C5-MF, C6, C7
-
-- prepare_data() --> tworzy pliki .gmt potrzebne do analizy sygnałowej GSA
 
 - przeprowadzenie_GSA()
 
