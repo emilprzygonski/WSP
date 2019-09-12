@@ -33,7 +33,12 @@ Uruchomienie aplikacji jest zalecane w oprogramowaniu R w wersji 3.3.3 lub 3.3.0
 -log4r
 -oligo
 
+
 Opis interfejsu aplikacji:
+
+UWAGA! Prosimy o cierpliwość podczas obsługiwania aplikacji. Wczytywana macierz ekspresji zazwyczaj ma duży rozmiar i jej wczytanie może wymagać chwili czasu. Zalecamy również w pierwszej kolejności wczytać plik z adnotacjami, dopiero później z macierzą ekspresji.
+
+
 
 
 Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego działania:
@@ -73,7 +78,7 @@ Z niewiadomych przyczyn po wczytaniu do tej funkcji wyniku funkcji wczytaj_sondy
 - heatmapa(ExprSet, TAB_geny_roznicujace) --> wyrysowanie heatmapy ekspresji dla sond różnicujących i zapis do pliku .png
 
 - import_zmsigdbr() --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje. Następnie tworzone są pliki .gmt potrzebne do analizy sygnałowej GSA.
-NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK _______.GMT ZE 
+NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK _______.GMT ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK I WYKORZYSTANO GO W ANALIZIE ŚCIEŻEK SYGNAŁOWYCH W FUNKCJI przeprowadzanie_GSA().
 
 *****
 Lista kategorii i oznaczenia (jak po myślniku to subkategoria)
@@ -86,5 +91,5 @@ Lista kategorii i oznaczenia (jak po myślniku to subkategoria)
   
   #C5-MF, C6, C7
 
-- przeprowadzenie_GSA()
-
+- przeprowadzenie_GSA() - przeprowadzenie analizy ścieżek sygnałowych metodą GSA.
+ZE WZGLĘDU NA NIE DO KOŃCA PASUJĄCĄ STRUKTURĘ TWORZONYCH W FUNKCJI import_zmsigdbr() PLIKÓW .GMT, WYKORZYSTYWANY JEST TU PLIK _______.GMT, POBRANY Z BAZY MSigDB, ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK.
