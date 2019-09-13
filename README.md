@@ -54,10 +54,10 @@ Aby wykonac analize sciezek sygnalowych nalezy przejsc do panelu 'Analiza scieze
 Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego działania:
 
 - Create_ExprSet() --> tworzy obiekt ExpSet na podstawie plików .CEL, użytkownik wskazuje folder, w którym znajdują się pliki oraz plik z adnotacjami zawierający nazwy wcześniej wspomnianych plików. 
-UWAGA: FUNKCJA TA ZOSTAŁA WYKONANA NA PLIKACH .CEL POZA APLIKACJĄ, PONIEWAŻ SHINY NIE BYŁO W STANIE POMIEŚCIĆ TAK DUŻYCH PLIKÓW W PAMIĘCI. STWORZONO ZATEM WZORCOWY ExpressionSet Z UDOSTĘPNIONYCH PRZEZ PROWADZĄCEGO PLIKÓW .CEL I ZAPISANO JEGO MACIERZ EKSPRESJI W ZAŁĄCZONYM DO PROJEKTU PLIKU _____________.
+UWAGA: FUNKCJA TA ZOSTAŁA WYKONANA NA PLIKACH .CEL POZA APLIKACJĄ, PONIEWAŻ SHINY NIE BYŁO W STANIE POMIEŚCIĆ TAK DUŻYCH PLIKÓW W PAMIĘCI. STWORZONO ZATEM WZORCOWY ExpressionSet Z UDOSTĘPNIONYCH PRZEZ PROWADZĄCEGO PLIKÓW .CEL I ZAPISANO JEGO MACIERZ EKSPRESJI W ZAŁĄCZONYM DO PROJEKTU PLIKU "ekspresje.csv".
 
 - create_ExprSet2() --> tworzy obiekt ExprSet, gdy użytkownik posiada gotową macierz ekspresji i plik z adnotacjami. 
-Wzorcowa macierz ekspresji ze wspomnianych wcześniej plików .CEL została załączona do projektu w pliku ________ oraz plik z adnotacjami __________.
+Wzorcowa macierz ekspresji ze wspomnianych wcześniej plików .CEL została załączona do projektu w pliku "ekspresje.csv" oraz plik z adnotacjami "datasetA_scans.txt".
 
 - wczytaj_sondy() --> funkcja ma możliwość wczytania listy nazw sond z pliku .txt, gdy użytkownik np.: chce tylko otrzymać ich symbole i entrez_id z funkcji updated_ExprSet(). 
 
@@ -87,18 +87,11 @@ Z niewiadomych przyczyn po wczytaniu do tej funkcji wyniku funkcji wczytaj_sondy
 - heatmapa(ExprSet, TAB_geny_roznicujace) --> wyrysowanie heatmapy ekspresji dla sond różnicujących i zapis do pliku .png
 
 - import_zmsigdbr() --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje. Następnie tworzone są pliki .gmt potrzebne do analizy sygnałowej GSA.
-NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK _______.GMT ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK I WYKORZYSTANO GO W ANALIZIE ŚCIEŻEK SYGNAŁOWYCH W FUNKCJI przeprowadzanie_GSA().
+NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK "msigdb_entrez_id.gmt" ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK I WYKORZYSTANO GO W ANALIZIE ŚCIEŻEK SYGNAŁOWYCH W FUNKCJI przeprowadzanie_GSA().
 
 *****
-Lista kategorii i oznaczenia (jak po myślniku to subkategoria)
-
-  #H, C1, C2, C2-CGP 
-  
-  #C2-CP, C2-CP:BIOCARTA, C2-CP:KEGG, C2-CP:PID, C2-CP:REACTOME
-  
-  #C3, C3-MIR, C3-TFT, C4, C4-CGN, C4-CM, C5, C5-BP, C5-CC
-  
-  #C5-MF, C6, C7
+Lista kategorii pokrywa się z kategoriami z bzy MSigDB, które można znaleźć na stronie:
+http://software.broadinstitute.org/gsea/msigdb/genesets.jsp
 
 - przeprowadzenie_GSA() - przeprowadzenie analizy ścieżek sygnałowych metodą GSA.
-ZE WZGLĘDU NA NIE DO KOŃCA PASUJĄCĄ STRUKTURĘ TWORZONYCH W FUNKCJI import_zmsigdbr() PLIKÓW .GMT, WYKORZYSTYWANY JEST TU PLIK _______.GMT, POBRANY Z BAZY MSigDB, ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK.
+ZE WZGLĘDU NA NIE DO KOŃCA PASUJĄCĄ STRUKTURĘ TWORZONYCH W FUNKCJI import_zmsigdbr() PLIKÓW .GMT, WYKORZYSTYWANY JEST TU PLIK "msigdb_entrez_id.gmt", POBRANY Z BAZY MSigDB, ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK.
