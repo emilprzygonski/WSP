@@ -38,7 +38,17 @@ Opis interfejsu aplikacji:
 
 UWAGA! Prosimy o cierpliwość podczas obsługiwania aplikacji. Wczytywana macierz ekspresji zazwyczaj ma duży rozmiar i jej wczytanie może wymagać chwili czasu. Zalecamy również w pierwszej kolejności wczytać plik z adnotacjami, dopiero później z macierzą ekspresji.
 
+Aplikacja umozliwia selekcje zestawow sond roznicujacych dla dwoch grup danych mikromacierzowych oraz analize sciezek sygnalowych.
 
+ANALIZA ROZNICUJACA
+W celu wykonania analizy roznicujacej nalezy wybrac plik z macierza ekspresji oraz plik z adnotacjami w panelu 'Identyfikacja sygnatur genowych dla obiektu ExpressionSet'.
+
+W panelu w poszczegolnych zakladkach uzytkownik ma mozliwosc podgladu wczytanych danych oraz tabeli cech, ktora zawiera wynik konwersji oznaczen sond Affymetrix popularnych mikromacierzy na symbole genow, nazwy genow, EntrezId, opisowe. W zakladce 'Pobierz' jest mozliwosc pobrania wynikowej tabeli cech.
+
+Kolejnym krokiem w analizie roznicujacej jest przejscie do panelu 'Selekcja zestawow sond roznicujacych'. W pierwszej zakladce, po wybraniu ww. panelu, zostaje wyswietlona tabela zawierajaca wynik analizy roznicujacej. Zakladka 'Pobierz wynik' umozliwia pobranie tabeli. Z kolei w zakladce 'Heatmapa' jest mozliwosc pobrania wygenerowanej na podstawie analizy roznicujacej heatmapy do folderu, w ktorym znajduja sie pliki aplikacji, tj. serwer.R oraz ui.R.
+
+ANALIZA SCIEZEK SYGNALOWYCH
+Aby wykonac analize sciezek sygnalowych nalezy przejsc do panelu 'Analiza sciezek sygnalowych', a nastepnie, po lewej stronie, wybrac kategorie. Kolejny krok polega na imporcie sciezek sygnalowych z kolekcji msigdb. Aby automatycznie pobrac sciezki sygnalowe, nalezy kliknac przycisk 'Importuj sciezki sygnalowe'. W zakladce 'Analiza sciezek sygnalowych za pomoca metody GSA' nalezy wczytac liste sciezek z pliku "msigdb_entrez_id.gmt" klikajac przycisk 'Wybierz plik z sciezkami', a nastepnie wybrac przycisk 'Wykonaj analize GSA'.
 
 
 Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego działania:
@@ -50,7 +60,6 @@ UWAGA: FUNKCJA TA ZOSTAŁA WYKONANA NA PLIKACH .CEL POZA APLIKACJĄ, PONIEWAŻ S
 Wzorcowa macierz ekspresji ze wspomnianych wcześniej plików .CEL została załączona do projektu w pliku ________ oraz plik z adnotacjami __________.
 
 - wczytaj_sondy() --> funkcja ma możliwość wczytania listy nazw sond z pliku .txt, gdy użytkownik np.: chce tylko otrzymać ich symbole i entrez_id z funkcji updated_ExprSet(). 
-Z niewiadomych przyczyn po wczytaniu wyniku tej funkcji, czyli listy nazw sond, do funkcji updated_ExprSet() aplikacja wyświetla błąd. Dzieje się tak pomimo właściwego działania kodu w środowisku R poza pakietem shiny.
 
 - updated_ExprSet(ExprSet) --> dodaje symbole genów i ich nazwy oraz entrez_id do listy sond (z obiektu ExprSet lub z pliku z listą sond); tabela z danymi zostaje dodana do obiektu ExprSet (featureData) lub jest ona tworzona w przypadku pobrania listy sond z pliku.
 Z niewiadomych przyczyn po wczytaniu do tej funkcji wyniku funkcji wczytaj_sondy(), czyli listy nazw sond, aplikacja wyświetla błąd. Dzieje się tak pomimo właściwego działania kodu w środowisku R poza pakietem shiny.
