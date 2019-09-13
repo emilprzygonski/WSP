@@ -1,5 +1,6 @@
 Celem projektu, którego przedstawieniem jest repozytorium było stworzenie aplikacji/programu w celu identyfikacji sygnatur genów różnicujących dwóch grup danych mikromacierzowych oraz analizy ścieżek sygnałowych.
 
+*****
 Podział pracy w grupie:
 1)	Identyfikacja sygnatur genowych różnicujących dla dwóch grup danych mikromacierzowych 
 > NOCUŃ WIKTORIA, KUKLA ARTUR
@@ -10,6 +11,7 @@ Podział pracy w grupie:
 3)  Stworzenie interfejsu graficznego 
 > BONIEK ANNA, WIECZOREK MARTA 
 
+*****
 Uruchomienie aplikacji jest zalecane w oprogramowaniu R w wersji 3.3.3 lub 3.3.0, gdyż w tych wersjach kompatybilne są wymagane pakiety: 
 
 *Biobase
@@ -33,7 +35,7 @@ Uruchomienie aplikacji jest zalecane w oprogramowaniu R w wersji 3.3.3 lub 3.3.0
 *log4r
 *oligo
 
-
+*****
 Opis interfejsu aplikacji:
 
 UWAGA! Prosimy o cierpliwość podczas obsługiwania aplikacji. Wczytywana macierz ekspresji zazwyczaj ma duży rozmiar i jej wczytanie może wymagać chwili czasu. Zalecamy również w pierwszej kolejności wczytać plik z adnotacjami, dopiero później z macierzą ekspresji.
@@ -50,7 +52,7 @@ Kolejnym krokiem w analizie roznicujacej jest przejscie do panelu 'Selekcja zest
 ANALIZA SCIEZEK SYGNALOWYCH
 Aby wykonac analize sciezek sygnalowych nalezy przejsc do panelu 'Analiza sciezek sygnalowych', a nastepnie, po lewej stronie, wybrac kategorie. Kolejny krok polega na imporcie sciezek sygnalowych z kolekcji msigdb. Aby automatycznie pobrac sciezki sygnalowe, nalezy kliknac przycisk 'Importuj sciezki sygnalowe'. W zakladce 'Analiza sciezek sygnalowych za pomoca metody GSA' nalezy wczytac liste sciezek z pliku "msigdb_entrez_id.gmt" klikajac przycisk 'Wybierz plik z sciezkami', a nastepnie wybrac przycisk 'Wykonaj analize GSA'.
 
-
+*****
 Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego działania:
 
 - Create_ExprSet() --> tworzy obiekt ExpSet na podstawie plików .CEL, użytkownik wskazuje folder, w którym znajdują się pliki oraz plik z adnotacjami zawierający nazwy wcześniej wspomnianych plików. 
@@ -89,8 +91,7 @@ Z niewiadomych przyczyn po wczytaniu do tej funkcji wyniku funkcji wczytaj_sondy
 - import_zmsigdbr() --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje. Następnie tworzone są pliki .gmt potrzebne do analizy sygnałowej GSA.
 NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK "msigdb_entrez_id.gmt" ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK I WYKORZYSTANO GO W ANALIZIE ŚCIEŻEK SYGNAŁOWYCH W FUNKCJI przeprowadzanie_GSA().
 
-*****
-Lista kategorii pokrywa się z kategoriami z bzy MSigDB, które można znaleźć na stronie:
+Lista kategorii pokrywa się z kategoriami z bazy MSigDB, które można znaleźć na stronie:
 http://software.broadinstitute.org/gsea/msigdb/genesets.jsp
 
 - przeprowadzenie_GSA() - przeprowadzenie analizy ścieżek sygnałowych metodą GSA.
