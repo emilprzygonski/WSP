@@ -53,6 +53,10 @@ ANALIZA SCIEZEK SYGNALOWYCH
 Aby wykonac analize sciezek sygnalowych nalezy przejsc do panelu 'Analiza sciezek sygnalowych', a nastepnie, po lewej stronie, wybrac kategorie. Kolejny krok polega na imporcie sciezek sygnalowych z kolekcji msigdb. Aby automatycznie pobrac sciezki sygnalowe, nalezy kliknac przycisk 'Importuj sciezki sygnalowe'. W zakladce 'Analiza sciezek sygnalowych za pomoca metody GSA' nalezy wczytac liste sciezek z pliku "msigdb_entrez_id.gmt" klikajac przycisk 'Wybierz plik z sciezkami', a nastepnie wybrac przycisk 'Wykonaj analize GSA'.
 
 *****
+Pliki załączone do projektu:
+
+
+*****
 Na całość aplikacji składa się szereg funkcji wymaganych do poprawnego działania:
 
 - Create_ExprSet() --> tworzy obiekt ExpSet na podstawie plików .CEL, użytkownik wskazuje folder, w którym znajdują się pliki oraz plik z adnotacjami zawierający nazwy wcześniej wspomnianych plików. 
