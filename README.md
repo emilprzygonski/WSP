@@ -88,11 +88,14 @@ Z niewiadomych przyczyn po wczytaniu do tej funkcji wyniku funkcji wczytaj_sondy
 
 - heatmapa(ExprSet, TAB_geny_roznicujace) --> wyrysowanie heatmapy ekspresji dla sond różnicujących i zapis do pliku .png
 
-- import_zmsigdbr() --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje. Następnie tworzone są pliki .gmt potrzebne do analizy sygnałowej GSA.
+- import_zmsigdbr(gs_category) --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje. Następnie tworzone są pliki .gmt potrzebne do analizy sygnałowej GSA.
 NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK "msigdb_entrez_id.gmt" ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK I WYKORZYSTANO GO W ANALIZIE ŚCIEŻEK SYGNAŁOWYCH W FUNKCJI przeprowadzanie_GSA().
 
 Lista kategorii pokrywa się z kategoriami z bazy MSigDB, które można znaleźć na stronie:
 http://software.broadinstitute.org/gsea/msigdb/genesets.jsp
 
-- przeprowadzenie_GSA() - przeprowadzenie analizy ścieżek sygnałowych metodą GSA.
+- przeprowadzenie_GSA(wybor_genow, up_ExprSet, TAB_geny_roznicujace) - przeprowadzenie analizy ścieżek sygnałowych metodą GSA.
+**wybor_genow - wszystkie lub roznicujace
+**up_ExprSet - cały objekt ExprSet z dodanymi entrez_id
+**TAB_geny_roznicujace - tabela analizy różnicującej
 ZE WZGLĘDU NA NIE DO KOŃCA PASUJĄCĄ STRUKTURĘ TWORZONYCH W FUNKCJI import_zmsigdbr() PLIKÓW .GMT, WYKORZYSTYWANY JEST TU PLIK "msigdb_entrez_id.gmt", POBRANY Z BAZY MSigDB, ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK.
