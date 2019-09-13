@@ -12,26 +12,26 @@ Podział pracy w grupie:
 
 Uruchomienie aplikacji jest zalecane w oprogramowaniu R w wersji 3.3.3 lub 3.3.0, gdyż w tych wersjach kompatybilne są wymagane pakiety: 
 
--Biobase
--affy
--tcltk
--gahgu95av2.db
--gahgu95av2cdf
--org.Hs.eg.db
--openxlsx
--limma
--gplots
--msigdbr
--GSEABase
--GSA
--Rtools (Rtools 3.4 dla wersji R 3.3.x)
--plotly
--shiny
--shinyFiles
--shinythemes
--shinyTime
--log4r
--oligo
+*Biobase
+*affy
+*tcltk
+*gahgu95av2.db
+*gahgu95av2cdf
+*org.Hs.eg.db
+*openxlsx
+*limma
+*gplots
+*msigdbr
+*GSEABase
+*GSA
+*Rtools (Rtools 3.4 dla wersji R 3.3.x)
+*plotly
+*shiny
+*shinyFiles
+*shinythemes
+*shinyTime
+*log4r
+*oligo
 
 
 Opis interfejsu aplikacji:
