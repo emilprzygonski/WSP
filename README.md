@@ -1,14 +1,14 @@
 Celem projektu, którego przedstawieniem jest repozytorium było stworzenie aplikacji/programu w celu identyfikacji sygnatur genów różnicujących dwóch grup danych mikromacierzowych oraz analizy ścieżek sygnałowych.
 
 Podział pracy w grupie:
-> NOCUŃ WIKTORIA, KUKLA ARTUR
 1)	Identyfikacja sygnatur genowych różnicujących dla dwóch grup danych mikromacierzowych 
+> NOCUŃ WIKTORIA, KUKLA ARTUR
 
-> WENZ KALINA, PRZYGOŃSKI EMIL
 2)	Analiza ścieżek sygnałowych powiązanych z  listą sygnatur genowych
-
-> BONIEK ANNA, WIECZOREK MARTA  
+> WENZ KALINA, PRZYGOŃSKI EMIL
+ 
 3)  Stworzenie interfejsu graficznego 
+> BONIEK ANNA, WIECZOREK MARTA 
 
 Uruchomienie aplikacji jest zalecane w oprogramowaniu R w wersji 3.3.3 lub 3.3.0, gdyż w tych wersjach kompatybilne są wymagane pakiety: 
 
