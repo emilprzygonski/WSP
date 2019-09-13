@@ -103,3 +103,4 @@ http://software.broadinstitute.org/gsea/msigdb/genesets.jsp
 **up_ExprSet - cały objekt ExprSet z dodanymi entrez_id
 **TAB_geny_roznicujace - tabela analizy różnicującej
 ZE WZGLĘDU NA NIE DO KOŃCA PASUJĄCĄ STRUKTURĘ TWORZONYCH W FUNKCJI import_zmsigdbr() PLIKÓW .GMT, WYKORZYSTYWANY JEST TU PLIK "msigdb_entrez_id.gmt", POBRANY Z BAZY MSigDB, ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK.
+Moźliwe także jest pojawienie się informacji o błędzie (mniej niż 5 procent entrez id pokrywa się z pobranymi ścieżkami), który wynika ze zbyt małej liczności sond różnicujących branych do analizy sygnałowej.
