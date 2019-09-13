@@ -50,7 +50,7 @@ W panelu w poszczegolnych zakladkach uzytkownik ma mozliwosc podgladu wczytanych
 Kolejnym krokiem w analizie roznicujacej jest przejscie do panelu 'Selekcja zestawow sond roznicujacych'. W pierwszej zakladce, po wybraniu ww. panelu, zostaje wyswietlona tabela zawierajaca wynik analizy roznicujacej. Zakladka 'Pobierz wynik' umozliwia pobranie tabeli. Z kolei w zakladce 'Heatmapa' jest mozliwosc pobrania wygenerowanej na podstawie analizy roznicujacej heatmapy do folderu, w ktorym znajduja sie pliki aplikacji, tj. serwer.R oraz ui.R.
 
 ANALIZA SCIEZEK SYGNALOWYCH
-Aby wykonac analize sciezek sygnalowych nalezy przejsc do panelu 'Analiza sciezek sygnalowych', a nastepnie, po lewej stronie, wybrac kategorie. Kolejny krok polega na imporcie sciezek sygnalowych z kolekcji msigdb. Aby automatycznie pobrac sciezki sygnalowe, nalezy kliknac przycisk 'Importuj sciezki sygnalowe'. W zakladce 'Analiza sciezek sygnalowych za pomoca metody GSA' nalezy wczytac liste sciezek z pliku "msigdb_entrez_id.gmt" klikajac przycisk 'Wybierz plik z sciezkami', a nastepnie wybrac przycisk 'Wykonaj analize GSA'.
+Aby wykonac analize sciezek sygnalowych nalezy przejsc do panelu 'Analiza sciezek sygnalowych', a nastepnie, po lewej stronie, wybrac kategorie. Kolejny krok polega na imporcie sciezek sygnalowych z kolekcji msigdb. Aby automatycznie pobrac sciezki sygnalowe, nalezy kliknac przycisk 'Importuj sciezki sygnalowe'. W zakladce 'Analiza sciezek sygnalowych za pomoca metody GSA' nalezy wczytac liste sciezek z zapisanego pliku z importu "EntrezIDs.gmt" lub własnego pliku (przykładowy pobrano z bazy MSiGDB po rejestracji - "msigdb_entrez_id.gmt") klikajac przycisk 'Wybierz plik z sciezkami', a nastepnie wybrac przycisk 'Wykonaj analize GSA'.
 
 *****
 Pliki załączone do projektu:
@@ -93,7 +93,6 @@ Z niewiadomych przyczyn po wczytaniu do tej funkcji wyniku funkcji wczytaj_sondy
 - heatmapa(ExprSet, TAB_geny_roznicujace) --> wyrysowanie heatmapy ekspresji dla sond różnicujących i zapis do pliku .png
 
 - import_zmsigdbr(gs_category) --> funkcja umożliwia import danych z bazy MSigDB, użytkownik wybiera kategorię, która go interesuje. Następnie tworzone są pliki .gmt potrzebne do analizy sygnałowej GSA.
-NIESTETY TWORZONE PLIKI .GMT NIE DO KOŃCA PASUJĄ POD WZGLĘDEM STRUKTURALNYM DO WEJŚCIA WYKORZYSTYWANEJ PÓŹNIEJ FUNKCJI GSA(). Z TEGO WZGLĘDU ZAREJESTROWANO SIĘ DO BAZY MSigDB I POBRANO PLIK "msigdb_entrez_id.gmt" ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK I WYKORZYSTANO GO W ANALIZIE ŚCIEŻEK SYGNAŁOWYCH W FUNKCJI przeprowadzanie_GSA().
 
 Lista kategorii pokrywa się z kategoriami z bazy MSigDB, które można znaleźć na stronie:
 http://software.broadinstitute.org/gsea/msigdb/genesets.jsp
@@ -102,5 +101,4 @@ http://software.broadinstitute.org/gsea/msigdb/genesets.jsp
 **wybor_genow - wszystkie lub roznicujace
 **up_ExprSet - cały objekt ExprSet z dodanymi entrez_id
 **TAB_geny_roznicujace - tabela analizy różnicującej
-ZE WZGLĘDU NA NIE DO KOŃCA PASUJĄCĄ STRUKTURĘ TWORZONYCH W FUNKCJI import_zmsigdbr() PLIKÓW .GMT, WYKORZYSTYWANY JEST TU PLIK "msigdb_entrez_id.gmt", POBRANY Z BAZY MSigDB, ZAWIERAJĄCY WSZYSTKIE KATEGORIE ŚCIEŻEK.
-Moźliwe także jest pojawienie się informacji o błędzie (mniej niż 5 procent entrez id pokrywa się z pobranymi ścieżkami), który wynika ze zbyt małej liczności sond różnicujących branych do analizy sygnałowej.
+Moźliwe jest pojawienie się informacji o błędzie (mniej niż 5 procent entrez id pokrywa się z pobranymi ścieżkami), który wynika ze zbyt małej liczności sond różnicujących branych do analizy sygnałowej.
