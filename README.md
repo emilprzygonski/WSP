@@ -54,14 +54,14 @@ Aby wykonac analize sciezek sygnalowych nalezy przejsc do panelu 'Analiza scieze
 
 *****
 Pliki załączone do projektu:
-funkcje (opisane niżej): create_ExprSet.R, create_ExprSet2.R, heatmapa.R, import_z_msigdbr.r,przeprowadzanie_GSA.R, summary_table.R, updated_ExprSet.R, wczytaj_sondy.R, zapis_xlsx.R
-ui.r
-server.r
-datasetA_scans.txt - plik z adnotacjami do macierzy ekspresji
-msigdb_entrez_id.gmt - pobrany bezporednio z bazy MSigDB po zarejestrowaniu przykładowy plik ze wszystkimi ścieżkami sygnałowymi
-sondy.txt - przykładowa lista sond do wprowadzenia w ostatniej zakładce aplikacji ("Identyfikacja sygnatur genowych dla listy sond")
-ekspresje.csv - plik załączony do wiadomości email (za duży rozmiar, aby umieścić go w repozytorium github); zawiera macierz ekspresji stworzoną (z plików .CEL udostępnionych przez prowadzącego) przed użyciem aplikacji za pomocą funkcji create_ExprSet.R.
-folder "funkcje" - zawiera plik ExprSet.r, w którym umieszczone zostały zmodyfikowane funkcje, wykorzystywane przez pakiet shiny.
+- funkcje (opisane niżej): create_ExprSet.R, create_ExprSet2.R, heatmapa.R, import_z_msigdbr.r,przeprowadzanie_GSA.R, summary_table.R, updated_ExprSet.R, wczytaj_sondy.R, zapis_xlsx.R
+- ui.r
+- server.r
+- datasetA_scans.txt - plik z adnotacjami do macierzy ekspresji
+- msigdb_entrez_id.gmt - pobrany bezporednio z bazy MSigDB po zarejestrowaniu przykładowy plik ze wszystkimi ścieżkami sygnałowymi
+- sondy.txt - przykładowa lista sond do wprowadzenia w ostatniej zakładce aplikacji ("Identyfikacja sygnatur genowych dla listy sond")
+- ekspresje.csv - plik załączony do wiadomości email (za duży rozmiar, aby umieścić go w repozytorium github); zawiera macierz ekspresji stworzoną (z plików .CEL udostępnionych przez prowadzącego) przed użyciem aplikacji za pomocą funkcji create_ExprSet.R.
+- folder "funkcje" - zawiera plik ExprSet.r, w którym umieszczone zostały zmodyfikowane funkcje, wykorzystywane przez pakiet shiny.
 
 WSZYSTKIE ZAŁĄCZONE PLIKI WRAZ Z FOLDEREM "funkcje" MUSZĄ ZNAJDOWAĆ SIĘ W JEDNYM FOLDERZE. NALEŻY TAKŻE UMIEŚCIĆ W NIM MACIERZ EKSPRESJI ZAŁĄCZONĄ DO WIADOMOCI EMAIL. APLIKACJĘ MOŻNA URUCHOMIĆ Z POZIOMU Ra POPRZEZ OTWARCIE PLIKU ui.r LUB server.r I KLIKNIĘCIE "Run App".
 *****
